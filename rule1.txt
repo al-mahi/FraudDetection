@@ -1,0 +1,20 @@
+select account_info.Name as Name,
+    account_info.account_number as AccountNumber,
+    transactions.tran_number as TransactionNumber,
+    transactions.merchant_name as Merchant,
+    transactions.transaction_amount as TransactionAmount
+from transactions
+    inner join account_info on transactions.account_number = account_info.account_number
+    inner join (
+        select account_number,
+            std(transaction_amount) as s,
+            avg(transaction_amount) as a
+        from transactions
+        where transaction_type = 'debit'
+        group by account_number
+    ) stdTableQuery on transactions.account_number = stdTableQuery.account_number
+where transactions.transaction_amount > stdTableQuery.a + 2 * stdTableQuery.s
+    or transactions.transaction_amount < stdTableQuery.a - 2 * stdTableQuery.s;
+
+
+

@@ -1,0 +1,8 @@
+select account_info.Name as Name,
+    account_info.account_number as AccountNumber,
+    transactions.tran_number as TransactionNumber,
+    transactions.merchant_state as Merchant,
+    transactions.transaction_amount as TransactionAmount
+    from transactions
+    inner join account_info on transactions.account_number = account_info.account_number
+where transactions.merchant_state != account_info.state;
